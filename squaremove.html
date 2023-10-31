@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button onclick="postionleft()">←</button>
+        <button onclick="postionup()">↑</button>
+        <button onclick="postionright()">→</button>
+        <button onclick="postiondown()">↓</button>
+    </div>
+    <div>
+        <div id="square" onkeydown="moveitkey(event)" onmousemove="moveitmouse(event)"></div>
+    </div>
+    <style>
+        #square{
+            background-color: red;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            margin-top: 0px;
+			margin-left: 0px;
+        }
+    </style>
+    <script>
+       //实体键盘控制
+       var square=document.getElementById('square');
+       document.onkeydown= function moveitkey(event){
+        switch (event.keyCode){
+            case 37: //左
+            square.style.left=square.offsetLeft-5+"px";
+		 	break; 
+		 	case 38: //上
+		 	square.style.top=square.offsetTop-5+"px";
+		 	break;
+		 	case 39:  //右
+		 	square.style.left=square.offsetLeft+5+"px";
+		 	break;	
+		 	case 40:  //下
+		 	square.style.top=square.offsetTop+5+"px";
+		 	break;	
+        }
+       }
+       //虚拟键盘控制
+       function postionleft(){square.style.left=square.offsetLeft-5+"px";}
+       function postionup(){square.style.top=square.offsetTop-5+"px";}
+       function postionright(){square.style.left=square.offsetLeft+5+"px";}
+       function postiondown(){square.style.top=square.offsetTop+5+"px";}
+       
+       //鼠标控制
+       //为squre绑定一个鼠标按下事件
+       square.onmousedown=function(event){
+        //div的左偏移量=鼠标.clientX-元素.ofsetLeft
+        let sqLeft=event.clientX-square.offsetLeft;
+        //div的上偏移量=鼠标.clientY-元素.ofsetTop
+        let sqTop=event.clientY-square.offsetTop;
+            	
+        //为document绑定一个onmousemove事件
+        document.onmousemove=function(event){
+            //获取鼠标的坐标
+            let left=event.clientX-sqLeft;
+            let top=event.clientY-sqTop;
+            		
+            //盒子移动的最大偏移量=浏览器宽度-盒子宽度
+            let moveLeft=document.documentElement.clientWidth-square.offsetWidth;
+            let moveTop=document.documentElement.clientHeight-square.offsetHeight;
+            		
+            //让盒子不超出浏览器范围
+            if(left<=0){
+                left=0;
+            }else if(left>moveLeft){
+                left=moveLeft;
+            }else{
+            	square.style.left=left+"px";
+            }if(top<=0){
+            	top=0;
+            }else if(top>moveTop){
+                top=moveTop;
+            }else{
+            	square.style.top=top+"px";
+            }
+        };
+        //为document绑定一个鼠标抬起事件，鼠标松开时，将box固定在当前位置
+        document.onmouseup=function(){
+            //取消document的onmousemove事件
+            document.onmousemove=null;
+            //取消document的onmouseup事件
+            document.onmouseup=null;
+            };
+        };
+    </script>
+</body>
+</html>
